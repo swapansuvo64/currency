@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .converter {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        .converter input, .converter select, .converter button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .converter button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .converter button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .currency-option {
+            display: flex;
+            align-items: center;
+        }
+        .currency-option img {
+            width: 24px;
+            height: 16px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="converter">
+        <h2>Currency Converter</h2>
+        <input type="number" id="amount" placeholder="Enter amount" />
+        <select id="fromCurrency"></select>
+        <select id="toCurrency"></select>
+        <button onclick="convertCurrency()">Convert</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const apiKey = '92bfacc2b941100ae8ea8a97';
+        const apiUrl = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`;
+        const defaultFlag = 'https://flagcdn.com/16x12/xx.png'; // Default flag image if not available
+
+        async function populateCurrencyOptions() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.result === "success") {
+                    const currencies = Object.keys(data.conversion_rates);
+                    const fromCurrency = document.getElementById('fromCurrency');
+                    const toCurrency = document.getElementById('toCurrency');
+
+                    currencies.forEach(currency => {
+                        const flagUrl = `https://flagcdn.com/16x12/${currency.toLowerCase()}.png`;
+                        const option1 = document.createElement('option');
+                        const option2 = document.createElement('option');
+                        option1.value = option2.value = currency;
+
+                        // Create flag image element
+                        const flagImg = document.createElement('img');
+                        flagImg.src = flagUrl;
+                        flagImg.srcset = `https://flagcdn.com/32x24/${currency.toLowerCase()}.png 2x, https://flagcdn.com/48x36/${currency.toLowerCase()}.png 3x`;
+                        flagImg.alt = `${currency} flag`;
+                        flagImg.onerror = () => flagImg.src = defaultFlag; // Fallback to default flag
+
+                        // Add flag and currency code to option
+                        option1.innerHTML = `${flagImg.outerHTML} ${currency}`;
+                        option2.innerHTML = `${flagImg.outerHTML} ${currency}`;
+
+                        fromCurrency.appendChild(option1);
+                        toCurrency.appendChild(option2);
+                    });
+                } else {
+                    alert("Failed to load currency options.");
+                }
+            } catch (error) {
+                alert("Error fetching currency options.");
+            }
+        }
+
+        async function convertCurrency() {
+            const amount = document.getElementById('amount').value;
+            const fromCurrency = document.getElementById('fromCurrency').value;
+            const toCurrency = document.getElementById('toCurrency').value;
+
+            if (!amount) {
+                alert("Please enter an amount.");
+                return;
+            }
+
+            const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/${fromCurrency}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.result === "success") {
+                    const rate = data.conversion_rates[toCurrency];
+                    const convertedAmount = (amount * rate).toFixed(2);
+                    document.getElementById('result').innerText = `${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`;
+                } else {
+                    document.getElementById('result').innerText = "Error retrieving data.";
+                }
+            } catch (error) {
+                document.getElementById('result').innerText = "Error fetching data.";
+            }
+        }
+
+        // Populate the currency dropdowns when the page loads
+        window.onload = populateCurrencyOptions;
+    </script>
+</body>
+</html>
