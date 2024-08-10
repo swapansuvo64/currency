@@ -193,7 +193,7 @@ form button{
                             <img src="https://flagcdn.com/48x36/us.png" alt="USD Flag"> USD
                         </div>
                         <div class="select-items">
-                            <!-- Dropdown options will be inserted here dynamically -->
+                            
                         </div>
                     </div>
                 </div>
@@ -207,7 +207,7 @@ form button{
                             <img src="https://flagcdn.com/48x36/bd.png" alt="BDT Flag"> BDT
                         </div>
                         <div class="select-items">
-                            <!-- Dropdown options will be inserted here dynamically -->
+                            
                         </div>
                     </div>
                 </div>
@@ -379,7 +379,7 @@ form button{
             "ZMK" : "zm",
             "ZWD" : "zw"
             
-            // Add more country codes as needed
+
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -439,7 +439,7 @@ form button{
             }
             exchangeRateTxt.innerText = 'Getting Exchange Rate....';
 
-            // Replace YOUR_API_KEY with your actual API key
+         
             const url = `https://v6.exchangerate-api.com/v6/92bfacc2b941100ae8ea8a97/latest/${fromCurrency}`;
 
             fetch(url)
