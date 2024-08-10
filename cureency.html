@@ -67,7 +67,6 @@
     <script>
         const apiKey = '92bfacc2b941100ae8ea8a97';
         const apiUrl = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/USD`;
-        const defaultFlag = 'https://flagcdn.com/16x12/xx.png'; // Default flag image if not available
 
         async function populateCurrencyOptions() {
             try {
@@ -80,22 +79,11 @@
                     const toCurrency = document.getElementById('toCurrency');
 
                     currencies.forEach(currency => {
-                        const flagUrl = `https://flagcdn.com/16x12/${currency.toLowerCase()}.png`;
                         const option1 = document.createElement('option');
                         const option2 = document.createElement('option');
                         option1.value = option2.value = currency;
-
-                        // Create flag image element
-                        const flagImg = document.createElement('img');
-                        flagImg.src = flagUrl;
-                        flagImg.srcset = `https://flagcdn.com/32x24/${currency.toLowerCase()}.png 2x, https://flagcdn.com/48x36/${currency.toLowerCase()}.png 3x`;
-                        flagImg.alt = `${currency} flag`;
-                        flagImg.onerror = () => flagImg.src = defaultFlag; // Fallback to default flag
-
-                        // Add flag and currency code to option
-                        option1.innerHTML = `${flagImg.outerHTML} ${currency}`;
-                        option2.innerHTML = `${flagImg.outerHTML} ${currency}`;
-
+                        option1.innerHTML = `<img src="https://flagsapi.com/${currency}/flat/24.png" alt="${currency} flag"/> ${currency}`;
+                        option2.innerHTML = `<img src="https://flagsapi.com/${currency}/flat/24.png" alt="${currency} flag"/> ${currency}`;
                         fromCurrency.appendChild(option1);
                         toCurrency.appendChild(option2);
                     });
@@ -134,8 +122,6 @@
                 document.getElementById('result').innerText = "Error fetching data.";
             }
         }
-
-        // Populate the currency dropdowns when the page loads
         window.onload = populateCurrencyOptions;
     </script>
 </body>
